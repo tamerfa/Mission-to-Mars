@@ -54,12 +54,13 @@ def scrape():
     table_df.columns = ['Description', 'Mars', 'Earth']
     table_df.set_index('Description', inplace=True)
 
-    # Adding 'Mars facts' dataframe (table_df) to mars_dict
-    mars_dict['facts'] = table_df
-
     # Save the table to an html file
-    table_df.to_html('mars_facts.html')
+    html_table = table_df.to_html()
+    html_table = html_table.replace('\n','')
+    html_table = html_table.replace('class="dataframe', 'class="table table-striped table-bordered')
+    html_table = html_table.replace('style="text-align: right;"', 'style="text-align: center;"')
 
+    mars_dict['facts'] = html_table
 
     # Scraping 'Mars Hemispheres'
     hem_url = 'https://marshemispheres.com/'
@@ -93,18 +94,17 @@ def scrape():
         html = browser.html
         soup = bs(html, 'html.parser')
         img_section = soup.find('div', class_='downloads')
-        
-        # Specify base url to add to each image's relative url
-        base_url = "https://marshemispheres.com/"
-        hem_dict['img_url'] = base_url+img_section.find('a', text='Original')['href']
+        hem_dict['img_url'] = hem_url + img_section.find('a', text='Sample')['href']
         hemisphere_image_urls.append(hem_dict)
         # Going back to the previous page
         browser.back()
         time.sleep(1)
 
+    browser.quit()
+
     # Adding 'Mars hemishperes' data to mars_dict
     mars_dict['hemishperes'] = hemisphere_image_urls
 
-    browser.quit()
+    
 
     return mars_dict
