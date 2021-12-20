@@ -60,6 +60,7 @@ def scrape():
     html_table = html_table.replace('class="dataframe', 'class="table table-striped table-bordered')
     html_table = html_table.replace('style="text-align: right;"', 'style="text-align: center;"')
 
+    # Adding 'Mars Facts' table to mars_dict
     mars_dict['facts'] = html_table
 
     # Scraping 'Mars Hemispheres'
